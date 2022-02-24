@@ -13,7 +13,7 @@ import {
 export class ProductsService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
-  ) { }
+  ) {}
 
   findAll(params?: FilterProductsDto) {
     if (params) {
@@ -34,15 +34,18 @@ export class ProductsService {
       }
       return this.productModel
         .find(filters)
+        .populate('brand')
         .skip(offset * limit)
         .limit(limit)
         .exec();
     }
-    return this.productModel.find().exec();
+    return this.productModel.find().populate('brand').exec();
   }
 
   async findOne(id: string) {
-    const product = await this.productModel.findById(id).exec();
+    const product = await this.productModel
+      .findOne({ _id: id })
+      .populate('brand');
     if (!product) {
       throw new NotFoundException(`Product #${id} not found`);
     }
