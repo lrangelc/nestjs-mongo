@@ -44,7 +44,6 @@ export class OrdersService {
     const order = await this.orderModel.findById(id);
     if (order) {
       productsIds.forEach((element) => {
-        // order.products.push(element);
         order.products.addToSet(element);
       });
       return order.save();
